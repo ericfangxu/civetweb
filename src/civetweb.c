@@ -21136,10 +21136,10 @@ mg_start2(struct mg_init_data *init, struct mg_error_data *error)
 	for (i = 0; i < ctx->cfg_worker_threads; i++) {
 		/* worker_thread sets up the other fields */
 		ctx->worker_connections[i].phys_ctx = ctx;
-		if (mg_start_thread_with_id(worker_thread,
+		int result = mg_start_thread_with_id(worker_thread,
 		                            &ctx->worker_connections[i],
-		                            &ctx->worker_threadids[i])
-		    != 0) {
+		                            &ctx->worker_threadids[i]);
+		if (result != 0) {
 
 			long error_no = (long)ERRNO;
 
@@ -21148,9 +21148,9 @@ mg_start2(struct mg_init_data *init, struct mg_error_data *error)
 				/* If the second, third, ... thread cannot be created, set a
 				 * warning, but keep running. */
 				mg_cry_ctx_internal(ctx,
-				                    "Cannot start worker thread %i: error %ld",
+				                    "Cannot start worker thread %i: error %ld, result %d",
 				                    i + 1,
-				                    error_no);
+				                    error_no, result);
 
 				/* If the server initialization should stop here, all
 				 * threads that have already been created must be stopped
@@ -21161,8 +21161,8 @@ mg_start2(struct mg_init_data *init, struct mg_error_data *error)
 				/* If the first worker thread cannot be created, stop
 				 * initialization and free the entire server context. */
 				mg_cry_ctx_internal(ctx,
-				                    "Cannot create threads: error %ld",
-				                    error_no);
+				                    "Cannot create threads: error %ld, result %d",
+				                    error_no, result);
 
 				if (error != NULL) {
 					error->code = MG_ERROR_DATA_CODE_OS_ERROR;
