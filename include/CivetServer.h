@@ -397,6 +397,28 @@ class CIVETWEB_CXX_API CivetServer
 	}
 
 	/**
+	 * addWebSocketHandler
+	 *
+	 *  This function works similar to void addWebSocketHandler(const std::string &uri,
+	                         CivetWebSocketHandler *handler);.
+	 *
+	 *  @param uri - URI to match.
+	 *  @param subprotocols - websocket subprotocols
+	 *  @param handler - handler instance to use.
+	 */
+	void addWebSocketHandler(const std::string &uri,
+	                         struct mg_websocket_subprotocols *subprotocols,
+	                         CivetWebSocketHandler *handler);
+
+	void
+	addWebSocketHandler(const std::string &uri,
+	                    struct mg_websocket_subprotocols *subprotocols,
+	                    CivetWebSocketHandler &handler)
+	{
+		addWebSocketHandler(uri, subprotocols, &handler);
+	}
+
+	/**
 	 * removeHandler(const std::string &)
 	 *
 	 * Removes a handler.

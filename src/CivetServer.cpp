@@ -514,6 +514,21 @@ CivetServer::addWebSocketHandler(const std::string &uri,
 }
 
 void
+CivetServer::addWebSocketHandler(const std::string &uri,
+                                 struct mg_websocket_subprotocols *subprotocols,
+                                 CivetWebSocketHandler *handler)
+{
+	mg_set_websocket_handler_with_subprotocols(context,
+	                                           uri.c_str(),
+	                                           subprotocols,
+	                                           webSocketConnectionHandler,
+	                                           webSocketReadyHandler,
+	                                           webSocketDataHandler,
+	                                           webSocketCloseHandler,
+	                                           handler);
+}
+
+void
 CivetServer::addAuthHandler(const std::string &uri, CivetAuthHandler *handler)
 {
 	mg_set_auth_handler(context, uri.c_str(), authHandler, handler);
